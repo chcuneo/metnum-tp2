@@ -32,7 +32,7 @@ int main(int argc, char *argv[]){
 	input >> Kfoldings;
 	
 	vector<bitset<42000>> crossval(Kfoldings);
-	vector < pair<int, int> > crossvaldim(Kfoldings);					//First: dimension de train; Second: dimension de test
+	vector < pair<int, int> > crossvaldim(Kfoldings);			//First: dimension de train; Second: dimension de test
 
 	int aux;
 	for (int line = 0; line < Kfoldings; line++) {
@@ -41,8 +41,8 @@ int main(int argc, char *argv[]){
 		for (int i = 0; i < 42000; i++) {
 			input >> aux;
 			crossval[line][i] = (int)aux;
-			if (aux == '1') crossvaldim[line].first++;
-			if (aux == '0') crossvaldim[line].second++;
+			if (aux == 1) crossvaldim[line].first++;
+			if (aux == 0) crossvaldim[line].second++;
 		}
 	}
 	input.close();
