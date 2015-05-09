@@ -5,7 +5,7 @@
 
 using namespace std;
 
-void showMatCons(const Matrix mat) {
+void showMatCons(const Matrix& mat) {
 	int m = mat.getm();
 	int n = mat.getn();
 	cout << endl;
@@ -19,6 +19,6 @@ void showMatCons(const Matrix mat) {
 	cout << endl;
 }
 
-void showMatFile(Matrix mat, char* file) {
+void showMatFile(Matrix& mat, char* file) {
 
 }
