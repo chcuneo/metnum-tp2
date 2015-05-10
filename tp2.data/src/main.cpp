@@ -86,6 +86,7 @@ int main(int argc, char *argv[]){
 				test0++;
 			}
 		}
+		
 		//A esta altura ya tengo la matriz train con las imagenes de su particion y la matriz de test con el resto, ambas con sus labels
 		//TODO: Que se hace despues aca?
 	}

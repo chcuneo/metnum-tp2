@@ -50,3 +50,92 @@ uint8_t kNN(Matrix& train, vector<uint8_t>& trainlabels, Matrix& unknown, unsign
 	return max;
 }
 
+vector<double> meanVector(Matrix& mat) {
+	int n = mat.getn();
+	int m = mat.getm();
+	vector<double> mean(mat.getm, 0);
+	for (int mx = 0; mx < m; mx++) {
+		for (int nx = 0; nx < n; nx++) {
+			mean[mx] += mat(nx, mx);
+
+		}
+		mean[mx] /= n;
+	}
+}
+
+//Tomando una matrix nxm Devuelve una matriz nxn resultado de multiplicar la matrix recivida por su transpuesta
+Matrix multiplyTransp(const Matrix& mat) {
+	int n = mat.getn();
+	int m = mat.getm();
+	Matrix res(n, n);
+	for (int rx = 0; rx < n; rx++) {
+		for (int ry = 0; ry < n; ry++) {
+			for (int mxy = 0; mxy < m; mxy++) {
+				res(rx, ry) += mat(rx, mxy) * mat(ry, mxy);
+			}
+		}
+	}
+	return res;
+}
+
+//Tomando una matrix nxm (una matriz con n muestras de m variables) devuelve la matriz de covarianzas.
+Matrix covarianceMatrix(Matrix& mat) {
+	int n = mat.getn();
+	int m = mat.getm();
+	Matrix temp(n, m);
+	vector<double> mean(meanVector(mat));
+	//Creo la matriz x con fila x(i) = (x(i) - u) / sqrt(n - 1)
+	for (int x = 0; x < n; x++) {
+		for (int y = 0; y < n; y++) {
+			temp(x, y) = (mat(x, y) - mean[x]) / sqrt(n - 1);
+		}
+	}
+	Matrix covMat(multiplyTransp(temp));
+	return covMat;
+}
+
+//Devuelve la norma vectorial ||V||
+double normaVectorial(vector<double>& v) {
+	double res = 0;
+	int n = v.size();
+	for (int x = 0; x < n; x++) {
+		res += v[x] * v[x];
+	}
+	res = sqrt(res);
+	return res;
+}
+
+//Divide escalarmente al vector "v" por k.
+void vectorScalarDiv(vector<double>& v, double k) {
+	int n = v.size();
+	for (int x = 0; x < n; x++) {
+		v[x] /= k;
+	}
+}
+
+//Devuelve la multiplicacion de dos vectores, "a" vector fila y "v" vector columna.
+double vectorMul(const vector<double>& a, const vector<double>& v) {
+	int n = v.size();
+	double res = 0;
+	assert(n == a.size());
+	for (int x = 0; x < n; x++) {
+		res += a[x] * v[x];
+	}
+	return res;
+}
+
+//Devuelve el autovector de A con autovalor asociado mas grande
+vector<double> PowerMethod(vector<double>& v, Matrix& A, int maxIters) {
+	//double tolerance = 1e-6;
+	int iteration = 0; 
+	double lambdaOld = 0;
+	for (int iteration = 0; iteration <= maxIters; iteration++) {
+		v = A*v;
+		vectorScalarDiv(v, normaVectorial(v));				//Aca ya tengo en v el siguiente candidato a autovector
+		/*if ((abs((lambda - lambdaOld) / lambda)) < tolerance) {
+		//	break;
+		//}
+		lambdaOld = lambda;*/
+	}
+	return v;
+}

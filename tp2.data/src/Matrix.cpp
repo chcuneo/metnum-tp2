@@ -163,6 +163,18 @@ Matrix Matrix::operator/(const double& b) {
 	return C;
 }
 
+vector<double> Matrix::operator*(const vector<double>& b) {
+	assert(_m == b.size());
+	vector<double> res(_n);
+	for (int x = 0; x < _n; x++) {
+		res[x] = 0;
+		for (int y = 0; y < _m; y++) {
+			res[x] += (*this)(x, y) * b[y];
+		}
+	}
+	return res;
+}
+
 vector<double> Matrix::diag_vec() {
 	std::vector<double> result(_n);
 
@@ -172,14 +184,15 @@ vector<double> Matrix::diag_vec() {
 
 	return result;
 }
+
 void Matrix::transpuesta() {
 	_transp = !_transp;
 }
 
-
 double& Matrix::operator()(const int& x, const int& y) {
 	return !_transp ? _mat[x][y] : _mat[y][x];
 }
+
 const double& Matrix::operator()(const int& x, const int& y)const {
 	return !_transp ? _mat[x][y] : _mat[y][x];
 }
@@ -187,6 +200,7 @@ const double& Matrix::operator()(const int& x, const int& y)const {
 int Matrix::getn() const {
 	return !_transp ? _n : _m;
 }
+
 int Matrix::getm() const {
 	return !_transp ? _m : _n;
 }

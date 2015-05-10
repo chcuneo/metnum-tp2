@@ -27,6 +27,7 @@ public:
 	Matrix operator/(const double& b);
 
 	//Con Vector
+	vector<double> operator*(const vector<double>& b);
 	std::vector<double> diag_vec();
 
 	double& operator()(const int& n, const int& m);
