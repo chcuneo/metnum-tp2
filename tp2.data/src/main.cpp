@@ -73,6 +73,7 @@ int main(int argc, char *argv[]){
 	output << scientific;
 	//Creo y ejecuto cada particion
 	for (int foldingN = 0; foldingN < Kfoldings; foldingN++) {
+		if (foldingN == 1) break;		//PARA TEST, BORRAR
 		cout << "Creando particion:" << foldingN << "..." << endl;
 		int trainsize = crossvaldim[foldingN].first;
 		int testsize = crossvaldim[foldingN].second;
@@ -101,20 +102,30 @@ int main(int argc, char *argv[]){
 		Matrix autovects(m, alpha);
 		vector<double> autovals(alpha);
 		//Calculo alpha autovalores y autovectores
+		cout << "Calculando autovalores y autovectores..." << endl;
 		for (int i = 0; i < alpha; i++) {
+			//Power iteration
 			vector<double> v0(m, 1);
 			vectorScalarDiv(v0, m);
-			autovals[i] = PowerIteration(v0, covm, 200);
+			autovals[i] = PowerIteration(v0, covm, 1000);
 			for (int x = 0; x < m; x++) {
 				autovects(x, i) = v0[x];
 			}
-			covm -= vectorMulMat(v0, v0) * (autovals[i] / vectorMul(v0, v0));
-
+			//Deflacion
+			for (int ii = 0; ii < m; ii++) {
+				for (int jj = 0; jj < m; jj++) {
+					covm(ii, jj) -= autovals[i] * v0[ii] * v0[jj];
+				}
+			}
+			cout << i << endl;
 			output << autovals[i] << endl;
 		}
+		//TODO general: expresar todos los vectores como matrices
 
+		//TODO: crear nueva matriz trainsize x alpha, y en cada fila poner cada muestra tranformada al cambio de espacio
+		//		luego para cada muestra de test, transformarla y buscar que digito es con knn
 	}
-
+	output.close();
 	return 0;
 }
 
