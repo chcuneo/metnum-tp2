@@ -189,11 +189,11 @@ void Matrix::transpuesta() {
 	_transp = !_transp;
 }
 
-double& Matrix::operator()(const int& x, const int& y) {
+float& Matrix::operator()(const int& x, const int& y) {
 	return !_transp ? _mat[x][y] : _mat[y][x];
 }
 
-const double& Matrix::operator()(const int& x, const int& y)const {
+const float& Matrix::operator()(const int& x, const int& y)const {
 	return !_transp ? _mat[x][y] : _mat[y][x];
 }
 

@@ -19,41 +19,42 @@ class ComparisonClass {
 //PRE: unknown y train tienen mismo m
 //Ver que unknown sea matriz 1 x m (fila)!!!!
 //Como todavia nose como lo voy a necesitar llamar, nose como meter el unknown, pero el algoritmo es este.
-uint8_t kNN(Matrix& train, vector<uint8_t>& trainlabels, Matrix& unknown, unsigned int k){
-	assert(train.getm == unknown.getm);
-	priority_queue< pair<uint8_t, double>, vector< pair<uint8_t, double> >, ComparisonClass > queue;
-	
-	//Para cada imagen de train...
-	for (int testsN = 0; testsN < train.getn(); testsN++) {
-		//Calculo la distancia con el unknown
-		long int sum = 0;
-		for (int y = 0; y < train.getm(); y++) {
-			sum += (train(testsN, y) - unknown(1, y))*(train(testsN, y) - unknown(1, y));
-		}
-		double dist = sqrt(sum);
-		//Lo agrego a la cola de prioridad (cola con el menor siempre en la cabeza)
-		queue.push(pair<uint8_t, double>(trainlabels[testsN], dist));
-	}
-	
-	//Hago votacion de los k mas cercanos
-	int cantidad[10] = { };
-	for (int kn = 0; kn < k; kn++) {
-		cantidad[queue.top().first]++;
-		queue.pop();
-	}
+//uint8_t kNN(Matrix& train, vector<uint8_t>& trainlabels, Matrix& unknown, int k){
+//	assert(train.getm() == unknown.getm());
+//	priority_queue< pair<uint8_t, double>, vector< pair<uint8_t, double> >, ComparisonClass > queue;
+//	
+//	//Para cada imagen de train...
+//	for (int testsN = 0; testsN < train.getn(); testsN++) {
+//		//Calculo la distancia con el unknown
+//		double sum = 0;
+//		for (int y = 0; y < train.getm(); y++) {
+//			sum += (train(testsN, y) - unknown(1, y))*(train(testsN, y) - unknown(1, y));
+//		}
+//		double dist = sqrt(sum);
+//		//Lo agrego a la cola de prioridad (cola con el menor siempre en la cabeza)
+//		queue.push(pair<uint8_t, double>(trainlabels[testsN], dist));
+//	}
+//	
+//	//Hago votacion de los k mas cercanos
+//	int cantidad[10] = { };
+//	for (int kn = 0; kn < k; kn++) {
+//		cantidad[queue.top().first]++;
+//		queue.pop();
+//	}
+//
+//	//Y elijo el grupo con mas votaciones
+//	uint8_t max = 0;
+//	for (int m = 0; m < 10; m++) {
+//		if (cantidad[m] > max) max = cantidad[m];
+//	}
+//	return max;
+//}
 
-	//Y elijo el grupo con mas votaciones
-	uint8_t max = 0;
-	for (int m = 0; m < 10; m++) {
-		if (cantidad[m] > max) max = cantidad[m];
-	}
-	return max;
-}
-
+//Devuelve un vector con la media de cada variable de la matriz recivida
 vector<double> meanVector(Matrix& mat) {
 	int n = mat.getn();
 	int m = mat.getm();
-	vector<double> mean(mat.getm, 0);
+	vector<double> mean(mat.getm(), 0);
 	for (int mx = 0; mx < m; mx++) {
 		for (int nx = 0; nx < n; nx++) {
 			mean[mx] += mat(nx, mx);
@@ -61,17 +62,19 @@ vector<double> meanVector(Matrix& mat) {
 		}
 		mean[mx] /= n;
 	}
+	return mean;
 }
 
 //Tomando una matrix nxm Devuelve una matriz nxn resultado de multiplicar la matrix recivida por su transpuesta
 Matrix multiplyTransp(const Matrix& mat) {
 	int n = mat.getn();
 	int m = mat.getm();
-	Matrix res(n, n);
-	for (int rx = 0; rx < n; rx++) {
-		for (int ry = 0; ry < n; ry++) {
-			for (int mxy = 0; mxy < m; mxy++) {
-				res(rx, ry) += mat(rx, mxy) * mat(ry, mxy);
+	Matrix res(m, m);
+	for (int rx = 0; rx < m; rx++) {
+		printf("%i", rx);
+		for (int ry = 0; ry < m; ry++) {
+			for (int nxy = 0; nxy < n; nxy++) {
+				res(rx, ry) += mat(nxy, ry) * mat(nxy, rx);
 			}
 		}
 	}
@@ -83,14 +86,18 @@ Matrix covarianceMatrix(Matrix& mat) {
 	int n = mat.getn();
 	int m = mat.getm();
 	Matrix temp(n, m);
+	cout << "Calculando vector de medias..." << endl;
 	vector<double> mean(meanVector(mat));
 	//Creo la matriz x con fila x(i) = (x(i) - u) / sqrt(n - 1)
+	cout << "Calculo matriz X..." << endl;
 	for (int x = 0; x < n; x++) {
-		for (int y = 0; y < n; y++) {
-			temp(x, y) = (mat(x, y) - mean[x]) / sqrt(n - 1);
+		for (int y = 0; y < m; y++) {
+			temp(x, y) = (mat(x, y) - mean[y]) / sqrt(n - 1);
 		}
 	}
+	cout << "Calculo multiplicacion por transpuesta..." << endl;
 	Matrix covMat(multiplyTransp(temp));
+	cout << "Listo matriz de covarianza..." << endl;
 	return covMat;
 }
 
@@ -125,7 +132,7 @@ double vectorMul(const vector<double>& a, const vector<double>& v) {
 }
 
 //Devuelve el autovector de A con autovalor asociado mas grande
-vector<double> PowerMethod(vector<double>& v, Matrix& A, int maxIters) {
+double PowerIteration(vector<double>& v, Matrix& A, int maxIters) {
 	//double tolerance = 1e-6;
 	int iteration = 0; 
 	double lambdaOld = 0;
@@ -137,5 +144,8 @@ vector<double> PowerMethod(vector<double>& v, Matrix& A, int maxIters) {
 		//}
 		lambdaOld = lambda;*/
 	}
-	return v;
+	vector<double> temp(A*v);
+	double res = vectorMul(temp, v)/ vectorMul(v,v);
+	return res;
 }
+

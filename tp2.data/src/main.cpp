@@ -7,6 +7,7 @@
 #include <string>
 #include <bitset>
 #include <cstdint>
+#include "algoritmos.h"
 
 using namespace std;
 
@@ -67,6 +68,7 @@ int main(int argc, char *argv[]){
 
 	//Creo y ejecuto cada particion
 	for (int foldingN = 0; foldingN < Kfoldings; foldingN++) {
+		cout << "Creando particion:" << foldingN << "..." << endl;
 		int trainsize = crossvaldim[foldingN].first;
 		int testsize = crossvaldim[foldingN].second;
 		Matrix train(trainsize, 784);
@@ -86,9 +88,15 @@ int main(int argc, char *argv[]){
 				test0++;
 			}
 		}
-		
+		cout << "Particion " << foldingN << " creada" << endl;
 		//A esta altura ya tengo la matriz train con las imagenes de su particion y la matriz de test con el resto, ambas con sus labels
-		//TODO: Que se hace despues aca?
+		cout << "Crando matriz de covarianza..." << endl;
+		Matrix covm(covarianceMatrix(train));
+		vector<double> x0(covm.getm(), 1);
+		vectorScalarDiv(x0, covm.getm());
+		cout << "Calculando primer autovalor..." << endl;
+		double autovalor1 = PowerIteration(x0, covm, 100);
+		printf("%f\n", autovalor1);
 	}
 
 	return 0;
