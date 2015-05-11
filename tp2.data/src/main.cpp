@@ -68,6 +68,9 @@ int main(int argc, char *argv[]){
 		trainset(digitN, 783) = (double)atoi(pixel);
 	}
 
+	ofstream output;
+	output.open(argv[2], ofstream::out);
+	output << scientific;
 	//Creo y ejecuto cada particion
 	for (int foldingN = 0; foldingN < Kfoldings; foldingN++) {
 		cout << "Creando particion:" << foldingN << "..." << endl;
@@ -94,11 +97,22 @@ int main(int argc, char *argv[]){
 		//A esta altura ya tengo la matriz train con las imagenes de su particion y la matriz de test con el resto, ambas con sus labels
 		cout << "Crando matriz de covarianza..." << endl;
 		Matrix covm(covarianceMatrix(train));
-		vector<double> x0(covm.getm(), 1);
-		vectorScalarDiv(x0, covm.getm());
-		cout << "Calculando primer autovalor..." << endl;
-		double autovalor1 = PowerIteration(x0, covm, 100);
-		printf("%f\n", autovalor1);
+		int m = covm.getm();
+		Matrix autovects(m, alpha);
+		vector<double> autovals(alpha);
+		//Calculo alpha autovalores y autovectores
+		for (int i = 0; i < alpha; i++) {
+			vector<double> v0(m, 1);
+			vectorScalarDiv(v0, m);
+			autovals[i] = PowerIteration(v0, covm, 200);
+			for (int x = 0; x < m; x++) {
+				autovects(x, i) = v0[x];
+			}
+			covm -= vectorMulMat(v0, v0) * (autovals[i] / vectorMul(v0, v0));
+
+			output << autovals[i] << endl;
+		}
+
 	}
 
 	return 0;

@@ -131,6 +131,18 @@ double vectorMul(const vector<double>& a, const vector<double>& v) {
 	return res;
 }
 
+//Devuelve la multiplicacion de dos vectores, a colimna y v fila
+Matrix vectorMulMat(const vector<double>& a, const vector<double>& v) {
+	int n = v.size();
+	Matrix res(n, n);
+	for (int x = 0; x < n; x++) {
+		for (int y = 0; y < n; y++) {
+			res(x,y) = a[x] * v[y];
+		}
+	}
+	return res;
+}
+
 //Devuelve el autovector de A con autovalor asociado mas grande
 double PowerIteration(vector<double>& v, Matrix& A, int maxIters) {
 	//double tolerance = 1e-6;

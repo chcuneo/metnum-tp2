@@ -151,6 +151,16 @@ Matrix Matrix::operator*(const double& b) {
 
 	return C;
 }
+
+Matrix& Matrix::operator*=(const double& b) {
+	for (int i = 0; i < _n; i++) {
+		for (int j = 0; j < _m; j++) {
+			_mat[i][j] *= b;
+		}
+	}
+	return *this;
+}
+
 Matrix Matrix::operator/(const double& b) {
 	Matrix C(_n, _n);
 
@@ -189,11 +199,11 @@ void Matrix::transpuesta() {
 	_transp = !_transp;
 }
 
-float& Matrix::operator()(const int& x, const int& y) {
+double& Matrix::operator()(const int& x, const int& y) {
 	return !_transp ? _mat[x][y] : _mat[y][x];
 }
 
-const float& Matrix::operator()(const int& x, const int& y)const {
+const double& Matrix::operator()(const int& x, const int& y)const {
 	return !_transp ? _mat[x][y] : _mat[y][x];
 }
 

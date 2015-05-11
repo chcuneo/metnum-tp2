@@ -12,10 +12,21 @@ void showMatCons(const Matrix& mat) {
 	for (int i = 0; i < n; i++) {
 		cout << "| ";
 		for (int j = 0; j< m; j++) {
-			printf("%1.0f ", mat(i, j));
+			printf("%1.5f ", mat(i, j));
 		}
 		cout << "|" << endl;
 	}
+	cout << endl;
+}
+
+void showVecCons(const vector<double>& vec) {
+	int n = vec.size();
+	cout << endl;
+	cout << "| ";
+	for (int j = 0; j < n; j++) {
+		printf("%1.2f ", vec[j]);
+	}
+	cout << "|" << endl;
 	cout << endl;
 }
 
