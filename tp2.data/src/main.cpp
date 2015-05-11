@@ -6,8 +6,9 @@
 #include <vector>
 #include <string>
 #include <bitset>
-#include <cstdint>
+#include <stdint.h>
 #include "algoritmos.h"
+#include <limits>
 
 using namespace std;
 
@@ -32,7 +33,7 @@ int main(int argc, char *argv[]){
 	input >> alpha;
 	input >> Kfoldings;
 	
-	vector<bitset<42000>> crossval(Kfoldings);
+	vector< bitset<42000> > crossval(Kfoldings);
 	vector < pair<int, int> > crossvaldim(Kfoldings);			//First: dimension de train; Second: dimension de test
 
 	int aux;
@@ -48,7 +49,8 @@ int main(int argc, char *argv[]){
 	}
 	input.close();
 	//Cargar datos trainset
-	input.open(databasedir + "train.csv", ifstream::in);
+	string trdata = databasedir + "train.csv";
+	input.open(trdata.c_str(), ifstream::in);
 	input.ignore(numeric_limits<streamsize>::max(), '\n');     //Ignoro primera linea
 
 	Matrix trainset(42000, 784);

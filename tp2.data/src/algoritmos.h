@@ -4,7 +4,7 @@
 #include <vector>
 #include "Matrix.h"
 #include <math.h>
-#include <cstdint>
+#include <stdint.h>
 #include <queue> 
 
 
@@ -71,7 +71,7 @@ Matrix multiplyTransp(const Matrix& mat) {
 	int m = mat.getm();
 	Matrix res(m, m);
 	for (int rx = 0; rx < m; rx++) {
-		printf("%i", rx);
+		printf("%i ", rx);
 		for (int ry = 0; ry < m; ry++) {
 			for (int nxy = 0; nxy < n; nxy++) {
 				res(rx, ry) += mat(nxy, ry) * mat(nxy, rx);

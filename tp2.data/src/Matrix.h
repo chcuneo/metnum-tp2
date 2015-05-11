@@ -40,6 +40,6 @@ private:
 	int _n;
 	int _m;
 	bool _transp;
-	vector<vector<float>> _mat;
+	vector< vector<float> > _mat;
 };
 
