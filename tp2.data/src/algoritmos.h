@@ -148,18 +148,20 @@ Matrix vectorMulMat(const vector<double>& a, const vector<double>& v) {
 double PowerIteration(vector<double>& v, Matrix& A, int maxIters) {
 	//double tolerance = 1e-6;
 	int iteration = 0; 
-	double lambdaOld = 0;
+	double autoval = 0.0;
+	double lastnorm = normaVectorial(v);
 	for (int iteration = 0; iteration <= maxIters; iteration++) {
 		v = A*v;
-		vectorScalarDiv(v, normaVectorial(v));				//Aca ya tengo en v el siguiente candidato a autovector
+		double len = normaVectorial(v);
+		vectorScalarDiv(v, len);
+		autoval = len / lastnorm;
+		lastnorm = len;
 		/*if ((abs((lambda - lambdaOld) / lambda)) < tolerance) {
 		//	break;
 		//}
 		lambdaOld = lambda;*/
 	}
-	vector<double> temp(A*v);
-	double res = vectorMul(temp, v)/ vectorMul(v,v);
-	return res;
+	return autoval;
 }
 
 void Deflation(vector<double>& v, Matrix& A, double autoval) {
