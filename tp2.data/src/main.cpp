@@ -12,7 +12,10 @@
 
 using namespace std;
 
-int main(int argc, char *argv[]){
+const int KNN = 0;
+const int PCAKNN = 1;
+
+int main(int argc, char *argv[]) {
 	//Validar argumentos
 	if (argc != 4) {
 		cout << "usage: ./tp <input file> <output file> <method>" << endl;
@@ -32,7 +35,7 @@ int main(int argc, char *argv[]){
 	input >> k;
 	input >> alpha;
 	input >> Kfoldings;
-	
+
 	vector< bitset<42000> > crossval(Kfoldings);
 	vector < pair<int, int> > crossvaldim(Kfoldings);			//First: dimension de train; Second: dimension de test
 
@@ -57,17 +60,51 @@ int main(int argc, char *argv[]){
 	Matrix trainset(42000, 784);
 	vector<uint8_t> trainsetlabels(42000);
 
-	char pixel[4];
+	string pixel;
 	for (int digitN = 0; digitN < 42000; digitN++) {
-		input.getline(pixel, 3, ',');
-		trainsetlabels[digitN] = atoi(pixel);
+		getline(input, pixel, ',');
+		trainsetlabels[digitN] = atoi(pixel.c_str());
 		for (int pixelN = 0; pixelN < 783; pixelN++) {
-			input.getline(pixel, 3, ',');
-			trainset(digitN, pixelN) = (double)atoi(pixel);
+			getline(input, pixel, ',');
+			trainset(digitN, pixelN) = stod(pixel);
 		}
-		input.getline(pixel, 3);								//Cargo ultimo pixel, de esta forma porque no tiene "," despues
-		trainset(digitN, 783) = (double)atoi(pixel);
+		getline(input, pixel, '\n');								//Cargo ultimo pixel, de esta forma porque no tiene "," despues
+		trainset(digitN, 783) = stod(pixel);
 	}
+	input.close();
+
+	//Cargo datos testset
+	string tstdata = databasedir + "train.csv";
+	input.open(tstdata.c_str(), ifstream::in);
+	input.ignore(numeric_limits<streamsize>::max(), '\n');     //Ignoro primera linea
+
+	Matrix testset(28000, 784);
+
+	for (int digitN = 0; digitN < 28000; digitN++) {
+		for (int pixelN = 0; pixelN < 783; pixelN++) {
+			getline(input, pixel, ',');
+			testset(digitN, pixelN) = stod(pixel);
+		}
+		getline(input, pixel, '\n');								//Cargo ultimo pixel, de esta forma porque no tiene "," despues
+		testset(digitN, 783) = stod(pixel);
+	}
+	input.close();
+
+	//switch (atoi(argv[3])) {
+	//	case KNN:
+	//		for (int sample = 0; sample < testset.getn(); sample++) {
+	//			vector<double> sampleN(testset.getm());
+	//			for (int y = 0; y < sampleN.size(); y++) {
+	//				sampleN[y] = testset(sample, y);
+	//			}
+	//			printf("Test %i= %i \n", sample, kNN(trainset,trainsetlabels, sampleN, k));
+	//		}
+	//		break;
+	//	case PCAKNN:
+	//		break;
+	//	default:
+	//		break;
+	//}
 
 	ofstream output;
 	output.open(argv[2], ofstream::out);
@@ -83,7 +120,7 @@ int main(int argc, char *argv[]){
 
 		Matrix train(trainsize, 784);
 		vector<uint8_t> trainlabels(trainsize);
-		
+
 		Matrix test(testsize, 784);
 		vector<uint8_t> testchecklabels(testsize);
 
@@ -104,7 +141,7 @@ int main(int argc, char *argv[]){
 		cout << "Particion " << foldingN << " creada" << endl;
 		//A esta altura ya tengo la matriz train con las imagenes de su particion y la matriz de test con el resto, ambas con sus labels
 		cout << "Crando matriz de covarianza..." << endl;
-		
+
 		//SI QUIERO CALCULARLA
 		//Matrix covm(covarianceMatrix(train));
 		Matrix covm(loadMatFile("covm"));
@@ -116,7 +153,7 @@ int main(int argc, char *argv[]){
 		int m = covm.getm();
 		Matrix autovects(m, alpha);
 		vector<double> autovals(alpha);
-		
+
 		//Calculo alpha autovalores y autovectores
 		cout << "Calculando autovalores y autovectores..." << endl;
 		for (int i = 0; i < alpha; i++) {
@@ -138,6 +175,7 @@ int main(int argc, char *argv[]){
 		//		luego para cada muestra de test, transformarla y buscar que digito es con knn
 	}
 	output.close();
+
 	return 0;
 }
 
