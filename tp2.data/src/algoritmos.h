@@ -11,13 +11,6 @@
 
 using namespace std;
 
-class ComparisonClass {
-public:
-	bool operator() (pair<uint8_t, double> first, pair<uint8_t, double> second) {
-		return first.second > second.second;
-	}
-};
-
 //PRE: unknown y train tienen mismo m
 //Ver que unknown sea matriz 1 x m (fila)!!!!
 //Como todavia nose como lo voy a necesitar llamar, nose como meter el unknown, pero el algoritmo es este.
@@ -41,18 +34,21 @@ uint8_t kNN(Matrix& train, vector<uint8_t>& trainlabels, vector<double> unknown,
 	//Hago votacion de los k mas cercanos
 	int cantidad[10] = { };
 	for (int kn = 0; kn < k; kn++) {
-		cout << queue.top().first << " ";
-		cout.flush();
+
 		cantidad[queue.top().second]++;
 		queue.pop();
 	}
 
 	//Y elijo el grupo con mas votaciones
-	uint8_t max = 0;
+	int max = cantidad[0];
+	uint8_t maxi = 0;
 	for (int m = 0; m < 10; m++) {
-		if (cantidad[m] > max) max = cantidad[m];
+		if (cantidad[m] > max) {
+			max = cantidad[m];
+			maxi = m;
+		}
 	}
-	return max;
+	return maxi;
 }
 
 //Devuelve un vector con la media de cada variable de la matriz recivida

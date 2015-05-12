@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
 	string pixel;
 	for (int digitN = 0; digitN < 42000; digitN++) {
 		getline(input, pixel, ',');
-		trainsetlabels[digitN] = atoi(pixel.c_str());
+		trainsetlabels[digitN] = stoi(pixel);
 		for (int pixelN = 0; pixelN < 783; pixelN++) {
 			getline(input, pixel, ',');
 			trainset(digitN, pixelN) = stod(pixel);
@@ -90,21 +90,21 @@ int main(int argc, char *argv[]) {
 	}
 	input.close();
 
-	//switch (atoi(argv[3])) {
-	//	case KNN:
-	//		for (int sample = 0; sample < testset.getn(); sample++) {
-	//			vector<double> sampleN(testset.getm());
-	//			for (int y = 0; y < sampleN.size(); y++) {
-	//				sampleN[y] = testset(sample, y);
-	//			}
-	//			printf("Test %i= %i \n", sample, kNN(trainset,trainsetlabels, sampleN, k));
-	//		}
-	//		break;
-	//	case PCAKNN:
-	//		break;
-	//	default:
-	//		break;
-	//}
+	switch (atoi(argv[3])) {
+		case KNN:
+			for (int sample = 0; sample < testset.getn(); sample++) {
+				vector<double> sampleN(testset.getm());
+				for (int y = 0; y < sampleN.size(); y++) {
+					sampleN[y] = testset(sample, y);
+				}
+				printf("Sample %i= %i \n", sample, kNN(trainset,trainsetlabels, sampleN, k));
+			}
+			break;
+		case PCAKNN:
+			break;
+		default:
+			break;
+	}
 
 	ofstream output;
 	output.open(argv[2], ofstream::out);
