@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
 	input.close();
 
 	//Cargo datos testset
-	string tstdata = databasedir + "train.csv";
+	string tstdata = databasedir + "test.csv";
 	input.open(tstdata.c_str(), ifstream::in);
 	input.ignore(numeric_limits<streamsize>::max(), '\n');     //Ignoro primera linea
 
