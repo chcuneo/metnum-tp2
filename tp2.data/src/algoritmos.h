@@ -72,6 +72,7 @@ Matrix multiplyTransp(const Matrix& mat) {
 	Matrix res(m, m);
 	for (int rx = 0; rx < m; rx++) {
 		printf("%i ", rx);
+		cout.flush();
 		for (int ry = 0; ry < m; ry++) {
 			for (int nxy = 0; nxy < n; nxy++) {
 				res(rx, ry) += mat(nxy, ry) * mat(nxy, rx);

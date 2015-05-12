@@ -48,6 +48,7 @@ int main(int argc, char *argv[]){
 		}
 	}
 	input.close();
+
 	//Cargar datos trainset
 	string trdata = databasedir + "train.csv";
 	input.open(trdata.c_str(), ifstream::in);
@@ -104,10 +105,15 @@ int main(int argc, char *argv[]){
 		//A esta altura ya tengo la matriz train con las imagenes de su particion y la matriz de test con el resto, ambas con sus labels
 		cout << "Crando matriz de covarianza..." << endl;
 		
-		Matrix covm(covarianceMatrix(train));
+		//SI QUIERO CALCULARLA
+		//Matrix covm(covarianceMatrix(train));
+		Matrix covm(loadMatFile("covm"));
+		//SI QUIERO CARGARLA
+		//SI QUIERO GUARDARLA
+		//saveMatFile(covm, "covm");
+		//return 0;
+
 		int m = covm.getm();
-		saveMatFile(covm, "covm");
-		return 0;
 		Matrix autovects(m, alpha);
 		vector<double> autovals(alpha);
 		
