@@ -161,3 +161,11 @@ double PowerIteration(vector<double>& v, Matrix& A, int maxIters) {
 	return res;
 }
 
+void Deflation(vector<double>& v, Matrix& A, double autoval) {
+	int m = A.getm();
+	for (int ii = 0; ii < m; ii++) {
+		for (int jj = 0; jj < m; jj++) {
+			A(ii, jj) -= autoval * v[ii] * v[jj];
+		}
+	}
+}

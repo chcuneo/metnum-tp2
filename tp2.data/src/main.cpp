@@ -18,7 +18,7 @@ int main(int argc, char *argv[]){
 		cout << "usage: ./tp <input file> <output file> <method>" << endl;
 		return 0;
 	}
-	
+
 	//Cargar datos de input file
 	ifstream input;
 	input.open(argv[1], ifstream::in);
@@ -74,13 +74,18 @@ int main(int argc, char *argv[]){
 	//Creo y ejecuto cada particion
 	for (int foldingN = 0; foldingN < Kfoldings; foldingN++) {
 		if (foldingN == 1) break;		//PARA TEST, BORRAR
+
 		cout << "Creando particion:" << foldingN << "..." << endl;
+
 		int trainsize = crossvaldim[foldingN].first;
 		int testsize = crossvaldim[foldingN].second;
+
 		Matrix train(trainsize, 784);
 		vector<uint8_t> trainlabels(trainsize);
+		
 		Matrix test(testsize, 784);
 		vector<uint8_t> testchecklabels(testsize);
+
 		int train0 = 0;
 		int test0 = 0;
 		for (int sampleN = 0; sampleN < 42000; sampleN++) {
@@ -94,34 +99,35 @@ int main(int argc, char *argv[]){
 				test0++;
 			}
 		}
+
 		cout << "Particion " << foldingN << " creada" << endl;
 		//A esta altura ya tengo la matriz train con las imagenes de su particion y la matriz de test con el resto, ambas con sus labels
 		cout << "Crando matriz de covarianza..." << endl;
+		
 		Matrix covm(covarianceMatrix(train));
 		int m = covm.getm();
+		saveMatFile(covm, "covm");
+		return 0;
 		Matrix autovects(m, alpha);
 		vector<double> autovals(alpha);
+		
 		//Calculo alpha autovalores y autovectores
 		cout << "Calculando autovalores y autovectores..." << endl;
 		for (int i = 0; i < alpha; i++) {
-			//Power iteration
-			vector<double> v0(m, 1);
-			vectorScalarDiv(v0, m);
+			//Creo vector inicial
+			vector<double> v0(m);
+			for (int x = 0; x < m; x++) v0[x] = rand() % 10 + 1;
+			//Power Iteration
 			autovals[i] = PowerIteration(v0, covm, 1000);
+			//Guardo el vector en la matriz de autovectores
 			for (int x = 0; x < m; x++) {
 				autovects(x, i) = v0[x];
 			}
-			//Deflacion
-			for (int ii = 0; ii < m; ii++) {
-				for (int jj = 0; jj < m; jj++) {
-					covm(ii, jj) -= autovals[i] * v0[ii] * v0[jj];
-				}
-			}
-			cout << i << endl;
+			Deflation(v0, covm, autovals[i]);
+			cout << i << ": " << autovals[i] << endl;
 			output << autovals[i] << endl;
 		}
 		//TODO general: expresar todos los vectores como matrices
-
 		//TODO: crear nueva matriz trainsize x alpha, y en cada fila poner cada muestra tranformada al cambio de espacio
 		//		luego para cada muestra de test, transformarla y buscar que digito es con knn
 	}
