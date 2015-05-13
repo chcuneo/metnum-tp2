@@ -30,21 +30,22 @@ void showVecCons(const vector<double>& vec) {
 	cout << endl;
 }
 
-void saveMatFile(Matrix& mat, char* file) {
+void saveMatFile(Matrix& mat, const char* file) {
 	ofstream output;
 	output.open(file, ofstream::out);
 	int n = mat.getn();
 	int m = mat.getm();
 	output << n << " " << m << " " << scientific;
-	output.precision(30);
+	output.precision(16);
 	for (int x = 0; x < n; x++) {
 		for (int y = 0; y < m; y++) {
 			output << mat(x, y) << " ";
 		}
 	}
+	output.close();
 }
 
-Matrix loadMatFile(char* file) {
+Matrix loadMatFile(const char* file) {
 	ifstream input;
 	input.open(file, ifstream::in);
 	int n;
@@ -56,5 +57,6 @@ Matrix loadMatFile(char* file) {
 			input >> mat(x, y);
 		}
 	}
+	input.close();
 	return mat;
 }

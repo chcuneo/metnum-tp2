@@ -110,9 +110,7 @@ int main(int argc, char *argv[]) {
 	output.open(argv[2], ofstream::out);
 	output << scientific;
 	ofstream olog;
-	olog.open("pitulin", ofstream::out);
-	ofstream olog1;
-	olog1.open("logcv", ofstream::out);
+	olog.open("/home/ccuneo/TmpMetNum/logcv", ofstream::out);
 	//Creo y ejecuto cada particion
 	for (int foldingN = 0; foldingN < Kfoldings; foldingN++) {
 		cout << "Creando particion:" << foldingN << "..." << endl;
@@ -144,12 +142,12 @@ int main(int argc, char *argv[]) {
 		//A esta altura ya tengo la matriz train con las imagenes de su particion y la matriz de test con el resto, ambas con sus labels
 		cout << "Crando matriz de covarianza..." << endl;
 
-		//SI QUIERO CALCULARLA
-		//Matrix covm(covarianceMatrix(train));
-		Matrix covm(loadMatFile("covm"));
+		string covmfilename = "/home/ccuneo/TmpMetNum/covm-CV" + to_string(foldingN);
 		//SI QUIERO CARGARLA
-		//SI QUIERO GUARDARLA
-		//saveMatFile(covm, "covm");
+		//Matrix covm(loadMatFile(covmfilename.c_str()));
+		//SI QUIERO CALCULARLA Y GUARDARLA
+		Matrix covm(covarianceMatrix(train));
+		saveMatFile(covm, covmfilename.c_str());
 		//return 0;
 
 		int m = covm.getm();
@@ -168,12 +166,17 @@ int main(int argc, char *argv[]) {
 			/*for (int x = 0; x < m; x++) {
 			autovects(x, i) = v0[x];
 			}*/
+
 			//Por ahora los guardo por fila
 			autovects(i) = v0;
 			Deflation(v0, covm, autovals[i]);
 			//cout << i << ": " << sqrt(autovals[i]) << endl;
 			output << sqrt(autovals[i]) << endl;
 		}
+
+		string autovecfilename = "/home/ccuneo/TmpMetNum/autovecs" + to_string(alpha) + "-CV" + to_string(foldingN);
+		saveMatFile(autovects, autovecfilename.c_str());
+
 		cout << "Calculo tc..." << endl;
 		Matrix tctrain(trainsize, alpha);
 		for (int x = 0; x < trainsize; x++) for (int y = 0; y < alpha; y++)	tctrain(x, y) = vectorMul(autovects(y), train(x));
@@ -188,14 +191,13 @@ int main(int argc, char *argv[]) {
 				testsample[y] = vectorMul(test(x), autovects(y));
 			}
 			guess = kNN(tctrain, trainlabels, testsample, k);
-			olog << "Digit " << (int)testchecklabels[x] << " - Guessed: " << guess << endl;
+			//olog << "Digit " << (int)testchecklabels[x] << " - Guessed: " << guess << endl;
 			if ((int)testchecklabels[x] == guess) correctguesses++;
 		}
-		olog1 << "CV " << foldingN << ": Guessed " << correctguesses << " of " << testsize << endl;
+		olog << "CV " << foldingN << ": Guessed " << correctguesses << " of " << testsize << endl;
 	}
 	output.close();
 	olog.close();
-	olog1.close();
 	return 0;
 }
 
