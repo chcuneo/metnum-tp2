@@ -111,10 +111,10 @@ int main(int argc, char *argv[]) {
 	output << scientific;
 	ofstream olog;
 	olog.open("pitulin", ofstream::out);
+	ofstream olog1;
+	olog1.open("logcv", ofstream::out);
 	//Creo y ejecuto cada particion
 	for (int foldingN = 0; foldingN < Kfoldings; foldingN++) {
-		if (foldingN == 1) break;		//PARA TEST, BORRAR
-
 		cout << "Creando particion:" << foldingN << "..." << endl;
 
 		int trainsize = crossvaldim[foldingN].first;
@@ -182,17 +182,21 @@ int main(int argc, char *argv[]) {
 		cout << "Proceso test:" << endl;
 		vector<double> testsample(alpha);
 		int guess;
+		int correctguesses = 0;
 		for (int x = 0; x < testsize; x++) {
 			for (int y = 0; y < alpha; y++) {
 				testsample[y] = vectorMul(test(x), autovects(y));
 			}
 			guess = kNN(tctrain, trainlabels, testsample, k);
-			cout << "Digit " << testchecklabels[x] << " - Guessed: " << guess << endl;
-			olog << "Digit " << testchecklabels[x] << " - Guessed: " << guess << endl;
+			cout << "Digit " << (int)testchecklabels[x] << " - Guessed: " << guess << endl;
+			olog << "Digit " << (int)testchecklabels[x] << " - Guessed: " << guess << endl;
+			if ((int)testchecklabels[x] == guess) correctguesses++;
 		}
+		olog1 << "CV " << foldingN << ": Guessed " << correctguesses << " of " << testsize << endl;
 	}
 	output.close();
-
+	olog.close();
+	olog1.close();
 	return 0;
 }
 
