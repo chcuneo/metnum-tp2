@@ -69,12 +69,11 @@ Matrix multiplyTransp(const Matrix& mat) {
 	int m = mat.getm();
 	Matrix res(m, m);
 	for (int rx = 0; rx < m; rx++) {
-		printf("%i ", rx);
-		cout.flush();
-		for (int ry = 0; ry < m; ry++) {
+		for (int ry = 0; ry < rx+1; ry++) {
 			for (int nxy = 0; nxy < n; nxy++) {
 				res(rx, ry) += mat(nxy, ry) * mat(nxy, rx);
 			}
+			res(ry, rx) = res(rx, ry);		//Aprovecho que es simetrica y calculo menooooos. VAMO' LO PIBEEEEE
 		}
 	}
 	return res;
@@ -168,10 +167,13 @@ double PowerIteration(vector<double>& v, Matrix& A, int maxIters) {
 	for (int iteration = 0; iteration <= maxIters; iteration++) {
 		v = A*v;
 		vectorScalarDiv(v, normaVectorial(v));				//Aca ya tengo en v el siguiente candidato a autovector
+		
+		//TODO: Esto era para calcular la convergencia posta, aplicarlo
 		/*if ((abs((lambda - lambdaOld) / lambda)) < tolerance) {
 		//	break;
 		//}
 		lambdaOld = lambda;*/
+
 	}
 	vector<double> temp(A*v);
 	double res = vectorMul(temp, v) / vectorMul(v, v);
@@ -184,5 +186,20 @@ void Deflation(vector<double>& v, Matrix& A, double autoval) {
 		for (int jj = 0; jj < m; jj++) {
 			A(ii, jj) -= autoval * v[ii] * v[jj];
 		}
+	}
+}
+
+void getAlphaEigenvectorAndValues(Matrix& covm, Matrix& autovects, vector<double>& autovals, int alpha) {
+	cout << "Calculando autovalores y autovectores..." << endl;
+	int m = covm.getm();
+	for (int i = 0; i < alpha; i++) {
+		//Creo vector inicial
+		vector<double> v0(m);
+		for (int x = 0; x < m; x++) v0[x] = rand() % 10 + 1;
+		//Power Iteration
+		autovals[i] = PowerIteration(v0, covm, 1000);
+		//Por ahora los guardo por fila, deberian estar por columna, pero por eficiencia los pongo asi.
+		autovects(i) = v0;
+		Deflation(v0, covm, autovals[i]);
 	}
 }
