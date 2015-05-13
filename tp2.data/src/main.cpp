@@ -164,7 +164,7 @@ int main(int argc, char *argv[]) {
 				Matrix covm(train.getm(), train.getm());
 
 				string covmfilename = "/home/ccuneo/TmpMetNum/covm-CV" + to_string(foldingN);
-				if (atoi(argv[3]) == 1) {
+				if (atoi(argv[4]) == 1) {
 					//SI QUIERO CALCULARLA Y GUARDARLA
 					covm = covarianceMatrix(train);
 					saveMatFile(covm, covmfilename.c_str());
@@ -179,12 +179,13 @@ int main(int argc, char *argv[]) {
 				vector<double> autovals(alpha);					//Sigma^2 = esta seria la diagonal de sigma^2, y almacena los autovalores de covm o los valores singulares de train al cuadrado
 
 				string autovecfilename = "/home/ccuneo/TmpMetNum/autovecs" + to_string(alpha) + "-CV" + to_string(foldingN);
-				if (atoi(argv[3]) == 1) {
+				if (atoi(argv[4]) == 1) {
 					//SI QUIERO CALCULARLOS Y GUARDARLOS
 					getAlphaEigenvectorAndValues(covm, autovects, autovals, alpha);		//Proceso y obtengo los alpha autovalores mas grandes y sus respectivos autovectores
 					saveMatFile(autovects, autovecfilename.c_str());
 				} else {
 					//SI QUIERO CARGARLOS
+					cout << "Cargando autovectores..." << endl;
 					autovects = loadMatFile(autovecfilename.c_str());
 				}
 
