@@ -33,6 +33,8 @@ public:
 
 	double& operator()(const int& n, const int& m);
 	const double& operator()(const int& n, const int& m) const;
+	vector<double>& operator()(const int& n);
+	const vector<double>& operator()(const int& n) const;
 
 	int getn() const;
 	int getm() const;

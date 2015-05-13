@@ -151,7 +151,7 @@ int main(int argc, char *argv[]) {
 		//return 0;
 
 		int m = covm.getm();
-		Matrix autovects(m, alpha);
+		Matrix autovects(alpha,m);
 		vector<double> autovals(alpha);
 
 		//Calculo alpha autovalores y autovectores
@@ -163,16 +163,30 @@ int main(int argc, char *argv[]) {
 			//Power Iteration
 			autovals[i] = PowerIteration(v0, covm, 1000);
 			//Guardo el vector en la matriz de autovectores
-			for (int x = 0; x < m; x++) {
+			/*for (int x = 0; x < m; x++) {
 				autovects(x, i) = v0[x];
-			}
+			}*/
+			//Por ahora los guardo por fila
+			autovects(i) = v0;
 			Deflation(v0, covm, autovals[i]);
 			cout << i << ": " << autovals[i] << endl;
 			output << autovals[i] << endl;
 		}
-		//TODO general: expresar todos los vectores como matrices
-		//TODO: crear nueva matriz trainsize x alpha, y en cada fila poner cada muestra tranformada al cambio de espacio
-		//		luego para cada muestra de test, transformarla y buscar que digito es con knn
+		cout << "Calculo tc..." << endl;
+		Matrix tctrain(trainsize, alpha);
+		for (int x = 0; x < trainsize; x++) for (int y = 0; y < alpha; y++)	tctrain(x, y) = vectorMul(autovects(y),train(x));
+		cout << "Listo tc..." << endl;
+
+		cout << "Proceso test:" << endl;
+		vector<double> testsample(alpha);
+		int guess;
+		for (int x = 0; x < testsize; x++) {
+			for (int y = 0; y < alpha; y++) {
+				testsample[y] = vectorMul(test(x), autovects(y));
+			}
+			guess = kNN(tctrain, trainlabels, testsample, k);
+			cout << "Digit " << testchecklabels[x] << " - Guessed: " << guess << endl;
+		}
 	}
 	output.close();
 

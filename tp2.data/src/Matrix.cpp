@@ -200,11 +200,19 @@ void Matrix::transpuesta() {
 }
 
 double& Matrix::operator()(const int& x, const int& y) {
-	return !_transp ? _mat[x][y] : _mat[y][x];
+	return _mat[x][y];
 }
 
 const double& Matrix::operator()(const int& x, const int& y)const {
-	return !_transp ? _mat[x][y] : _mat[y][x];
+	return _mat[x][y];
+}
+
+vector<double>& Matrix::operator()(const int& x) {
+	return _mat[x];
+}
+
+const vector<double>& Matrix::operator()(const int& x)const {
+	return _mat[x];
 }
 
 int Matrix::getn() const {
