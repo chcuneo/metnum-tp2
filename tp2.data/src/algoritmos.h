@@ -18,8 +18,6 @@ uint8_t kNN(Matrix& train, vector<uint8_t>& trainlabels, vector<double> unknown,
 	assert(train.getm() == unknown.size());
 	priority_queue< pair<double, uint8_t>, vector< pair<double, uint8_t> >, greater< pair<double, uint8_t> > > queue;
 	int n = train.getn();
-	cout << "Calculando knn..." << endl;
-	
 	for (int testsN = 0; testsN < n; testsN++) {
 	
 		double sum = 0;
@@ -30,7 +28,6 @@ uint8_t kNN(Matrix& train, vector<uint8_t>& trainlabels, vector<double> unknown,
 	
 		queue.push(pair<double, uint8_t>(dist, trainlabels[testsN]));
 	}
-	cout << "Ya tengo las distancias" << endl;
 	//Hago votacion de los k mas cercanos
 	int cantidad[10] = { };
 	for (int kn = 0; kn < k; kn++) {

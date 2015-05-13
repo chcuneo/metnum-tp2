@@ -171,7 +171,7 @@ int main(int argc, char *argv[]) {
 			//Por ahora los guardo por fila
 			autovects(i) = v0;
 			Deflation(v0, covm, autovals[i]);
-			cout << i << ": " << sqrt(autovals[i]) << endl;
+			//cout << i << ": " << sqrt(autovals[i]) << endl;
 			output << sqrt(autovals[i]) << endl;
 		}
 		cout << "Calculo tc..." << endl;
@@ -188,7 +188,6 @@ int main(int argc, char *argv[]) {
 				testsample[y] = vectorMul(test(x), autovects(y));
 			}
 			guess = kNN(tctrain, trainlabels, testsample, k);
-			cout << "Digit " << (int)testchecklabels[x] << " - Guessed: " << guess << endl;
 			olog << "Digit " << (int)testchecklabels[x] << " - Guessed: " << guess << endl;
 			if ((int)testchecklabels[x] == guess) correctguesses++;
 		}
