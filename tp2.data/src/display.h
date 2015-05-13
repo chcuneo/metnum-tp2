@@ -42,6 +42,7 @@ void saveMatFile(Matrix& mat, const char* file) {
 			output << mat(x, y) << " ";
 		}
 	}
+	output.flush();
 	output.close();
 }
 

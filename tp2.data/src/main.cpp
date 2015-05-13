@@ -159,17 +159,18 @@ int main(int argc, char *argv[]) {
 
 				cout << "Particion " << foldingN << " creada" << endl;
 				//A esta altura ya tengo la matriz train con las imagenes de su particion y la matriz de test con el resto, ambas con sus labels
-				cout << "Crando matriz de covarianza..." << endl;
 
 				Matrix covm(train.getm(), train.getm());
 
 				string covmfilename = "/home/ccuneo/TmpMetNum/covm-CV" + to_string(foldingN);
 				if (atoi(argv[4]) == 1) {
+					cout << "Calculando matriz de covarianza..." << endl;
 					//SI QUIERO CALCULARLA Y GUARDARLA
 					covm = covarianceMatrix(train);
 					saveMatFile(covm, covmfilename.c_str());
 				} else {
 					//SI QUIERO CARGARLA
+					cout << "Cargando matriz de covarianza..." << endl;
 					covm = loadMatFile(covmfilename.c_str());
 				}
 
@@ -214,7 +215,9 @@ int main(int argc, char *argv[]) {
 				}
 				olog << "CV " << foldingN << ": Guessed " << correctguesses << " of " << testsize << endl;
 			}
+			output.flush();
 			output.close();
+			olog.flush();
 			olog.close(); 
 		}
 			break;
