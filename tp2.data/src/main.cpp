@@ -97,7 +97,7 @@ int main(int argc, char *argv[]) {
 				for (int y = 0; y < sampleN.size(); y++) {
 					sampleN[y] = testset(sample, y);
 				}
-				printf("Sample %i= %i \n", sample, kNN(trainset,trainsetlabels, sampleN, k));
+				printf("Sample %i= %i \n", sample, kNN(trainset, trainsetlabels, sampleN, k));
 			}
 			break;
 		case PCAKNN:
@@ -109,6 +109,8 @@ int main(int argc, char *argv[]) {
 	ofstream output;
 	output.open(argv[2], ofstream::out);
 	output << scientific;
+	ofstream olog;
+	olog.open("pitulin", ofstream::out);
 	//Creo y ejecuto cada particion
 	for (int foldingN = 0; foldingN < Kfoldings; foldingN++) {
 		if (foldingN == 1) break;		//PARA TEST, BORRAR
@@ -151,7 +153,7 @@ int main(int argc, char *argv[]) {
 		//return 0;
 
 		int m = covm.getm();
-		Matrix autovects(alpha,m);
+		Matrix autovects(alpha, m);
 		vector<double> autovals(alpha);
 
 		//Calculo alpha autovalores y autovectores
@@ -164,17 +166,17 @@ int main(int argc, char *argv[]) {
 			autovals[i] = PowerIteration(v0, covm, 1000);
 			//Guardo el vector en la matriz de autovectores
 			/*for (int x = 0; x < m; x++) {
-				autovects(x, i) = v0[x];
+			autovects(x, i) = v0[x];
 			}*/
 			//Por ahora los guardo por fila
 			autovects(i) = v0;
 			Deflation(v0, covm, autovals[i]);
-			cout << i << ": " << autovals[i] << endl;
-			output << autovals[i] << endl;
+			cout << i << ": " << sqrt(autovals[i]) << endl;
+			output << sqrt(autovals[i]) << endl;
 		}
 		cout << "Calculo tc..." << endl;
 		Matrix tctrain(trainsize, alpha);
-		for (int x = 0; x < trainsize; x++) for (int y = 0; y < alpha; y++)	tctrain(x, y) = vectorMul(autovects(y),train(x));
+		for (int x = 0; x < trainsize; x++) for (int y = 0; y < alpha; y++)	tctrain(x, y) = vectorMul(autovects(y), train(x));
 		cout << "Listo tc..." << endl;
 
 		cout << "Proceso test:" << endl;
@@ -186,6 +188,7 @@ int main(int argc, char *argv[]) {
 			}
 			guess = kNN(tctrain, trainlabels, testsample, k);
 			cout << "Digit " << testchecklabels[x] << " - Guessed: " << guess << endl;
+			olog << "Digit " << testchecklabels[x] << " - Guessed: " << guess << endl;
 		}
 	}
 	output.close();
