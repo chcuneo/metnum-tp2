@@ -343,7 +343,8 @@ int main(int argc, char *argv[]) {
 					chrono::high_resolution_clock::time_point t2 = chrono::high_resolution_clock::now();
 					auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
 
-					printNewLine("Listo tc(test):" + testdataname);
+					printUpdateLine("Listo tc(test):" + testdataname + to_string(duration));
+					cout << endl;
 
 					vector<double> testsample(alpha);				//Aca va la muestra del test a procesar, cambiada de base
 					int guess;
