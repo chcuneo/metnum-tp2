@@ -61,3 +61,13 @@ Matrix loadMatFile(const char* file) {
 	input.close();
 	return mat;
 }
+
+void printNewLine(string out) {
+	cout << out << endl;
+	cout.flush();
+}
+
+void printUpdateLine(string out) {
+	cout << "\r" << out;
+	cout.flush();
+}

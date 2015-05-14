@@ -69,6 +69,8 @@ Matrix multiplyTransp(const Matrix& mat) {
 	int m = mat.getm();
 	Matrix res(m, m);
 	for (int rx = 0; rx < m; rx++) {
+		cout << rx << '\r';
+		cout.flush();
 		for (int ry = 0; ry < rx+1; ry++) {
 			for (int nxy = 0; nxy < n; nxy++) {
 				res(rx, ry) += mat(nxy, ry) * mat(nxy, rx);
@@ -202,4 +204,47 @@ void getAlphaEigenvectorAndValues(Matrix& covm, Matrix& autovects, vector<double
 		autovects(i) = v0;
 		Deflation(v0, covm, autovals[i]);
 	}
+}
+
+
+
+////////////////////////////////////////////////////
+////////////////////////////////////////////////////
+//////////////     PARA TESTS      /////////////////
+////////////////////////////////////////////////////
+////////////////////////////////////////////////////
+vector<int> ztokNN(Matrix& train, vector<uint8_t>& trainlabels, vector<double> unknown, int k) {
+	vector<int> guessforK(k,0);
+	assert(train.getm() == unknown.size());
+	priority_queue< pair<double, uint8_t>, vector< pair<double, uint8_t> >, greater< pair<double, uint8_t> > > queue;
+	int n = train.getn();
+	for (int testsN = 0; testsN < n; testsN++) {
+
+		double sum = 0;
+		for (int y = 0; y < train.getm(); y++) {
+			sum += (train(testsN, y) - unknown[y])*(train(testsN, y) - unknown[y]);
+		}
+		double dist = sqrt(sum);
+
+		queue.push(pair<double, uint8_t>(dist, trainlabels[testsN]));
+	}
+	//Hago votacion de los k mas cercanos
+	int cantidad[10] = {};
+	for (int kn = 0; kn < k; kn++) {
+		cantidad[queue.top().second]++;
+		queue.pop();
+
+		int max = cantidad[0];
+		uint8_t maxi = 0;
+		for (int m = 1; m < 10; m++) {
+			if (cantidad[m] > max) {
+				max = cantidad[m];
+				maxi = m;
+			}
+		}
+		guessforK[kn] = maxi;
+	}
+
+	
+	return guessforK;
 }
