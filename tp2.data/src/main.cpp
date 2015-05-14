@@ -9,6 +9,8 @@
 #include <stdint.h>
 #include "algoritmos.h"
 #include <limits>
+#include <chrono>
+
 
 using namespace std;
 
@@ -293,8 +295,8 @@ int main(int argc, char *argv[]) {
 				Matrix tctrain(trainsize, alpha);				//Aca voy a guardar las muestras de trainset cambiadas de base (base de autovectores)
 				for (int x = 0; x < trainsize; x++) for (int y = 0; y < alpha; y++)	tctrain(x, y) = vectorMul(autovects(y), train(x)); //Para cada muestra, la cambio de base y almaceno en la matriz tctrain
 
-				printNewLine("Listo tc(test):" + testdataname);
-				cout << "Proceso casos de test:" << endl;
+				printUpdateLine("Listo tc(test):" + testdataname);
+				cout << endl << "Proceso casos de test:" << endl;
 
 				int maxguesses;
 				vector<double> testsample(alpha);				//Aca va la muestra del test a procesar, cambiada de base
@@ -320,17 +322,26 @@ int main(int argc, char *argv[]) {
 				}
 				logtestk.close();
 			}
-			k = bestk;
+			//HABILITAR
+			//k = bestk;
+			k = 10;
+
 			cout << "Mejor k=" << k << endl;
 			{//Hago Tests cambiando alpha
 				ofstream logalpha("/home/ccuneo/TmpMetNum/logalpha.csv", ofstream::out);
-				logalpha << "alpha-k" << k << ",CorrectOf4200guesses" << endl;
+				logalpha << "alpha-k" << k << ",CorrectOf4200guesses,tcCalculationTime" << endl;
 				for (alpha = 1; alpha < alphaMAX; alpha++) {
 					string testdataname("Alpha=" + to_string(alpha) + " k=" + to_string(k));
 					printUpdateLine("Calculo tc(test): " + testdataname);
 
 					Matrix tctrain(trainsize, alpha);				//Aca voy a guardar las muestras de trainset cambiadas de base (base de autovectores)
+					
+					chrono::high_resolution_clock::time_point t1 = chrono::high_resolution_clock::now();
+
 					for (int x = 0; x < trainsize; x++) for (int y = 0; y < alpha; y++)	tctrain(x, y) = vectorMul(autovects(y), train(x)); //Para cada muestra, la cambio de base y almaceno en la matriz tctrain
+					
+					chrono::high_resolution_clock::time_point t2 = chrono::high_resolution_clock::now();
+					auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
 
 					printNewLine("Listo tc(test):" + testdataname);
 
@@ -345,7 +356,7 @@ int main(int argc, char *argv[]) {
 						//printUpdateLine("Test " + to_string(x));
 						if ((int)testchecklabels[x] == guess) correctguesses++;		//Si predije lo que deberia, incremento
 					}
-					logalpha << alpha << "," << correctguesses << endl;
+					logalpha << alpha << "," << correctguesses << "," << duration << endl;
 				}
 				logalpha.flush();
 				logalpha.close();
