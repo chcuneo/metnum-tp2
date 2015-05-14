@@ -11,9 +11,7 @@
 
 using namespace std;
 
-//PRE: unknown y train tienen mismo m
-//Ver que unknown sea matriz 1 x m (fila)!!!!
-//Como todavia nose como lo voy a necesitar llamar, nose como meter el unknown, pero el algoritmo es este.
+//KNN
 uint8_t kNN(Matrix& train, vector<uint8_t>& trainlabels, vector<double> unknown, int k){
 	assert(train.getm() == unknown.size());
 	priority_queue< pair<double, uint8_t>, vector< pair<double, uint8_t> >, greater< pair<double, uint8_t> > > queue;
@@ -86,18 +84,14 @@ Matrix covarianceMatrix(Matrix& mat) {
 	int n = mat.getn();
 	int m = mat.getm();
 	Matrix temp(n, m);
-	cout << "Calculando vector de medias..." << endl;
 	vector<double> mean(meanVector(mat));
 	//Creo la matriz x con fila x(i) = (x(i) - u) / sqrt(n - 1)
-	cout << "Calculo matriz X..." << endl;
 	for (int x = 0; x < n; x++) {
 		for (int y = 0; y < m; y++) {
 			temp(x, y) = (mat(x, y) - mean[y]) / sqrt(n - 1);
 		}
 	}
-	cout << "Calculo multiplicacion por transpuesta..." << endl;
 	Matrix covMat(multiplyTransp(temp));
-	cout << "Listo matriz de covarianza..." << endl;
 	return covMat;
 }
 
@@ -192,7 +186,6 @@ void Deflation(vector<double>& v, Matrix& A, double autoval) {
 }
 
 void getAlphaEigenvectorAndValues(Matrix& covm, Matrix& autovects, vector<double>& autovals, int alpha) {
-	cout << "Calculando autovalores y autovectores..." << endl;
 	int m = covm.getm();
 	for (int i = 0; i < alpha; i++) {
 		//Creo vector inicial

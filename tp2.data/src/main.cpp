@@ -296,7 +296,7 @@ int main(int argc, char *argv[]) {
 				for (int x = 0; x < trainsize; x++) for (int y = 0; y < alpha; y++)	tctrain(x, y) = vectorMul(autovects(y), train(x)); //Para cada muestra, la cambio de base y almaceno en la matriz tctrain
 
 				printUpdateLine("Listo tc(test):" + testdataname);
-				cout << endl << "Proceso casos de test:" << endl;
+				cout << endl << "Proceso distintos k:" << endl;
 
 				int maxguesses;
 				vector<double> testsample(alpha);				//Aca va la muestra del test a procesar, cambiada de base
@@ -322,9 +322,8 @@ int main(int argc, char *argv[]) {
 				}
 				logtestk.close();
 			}
-			//HABILITAR
-			//k = bestk;
-			k = 10;
+		
+			k = bestk;
 
 			cout << "Mejor k=" << k << endl;
 			{//Hago Tests cambiando alpha
