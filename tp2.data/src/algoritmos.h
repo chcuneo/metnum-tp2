@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <queue> 
 #include <functional>     // std::greater
+#include <tuple>
 
 
 using namespace std;
@@ -206,8 +207,7 @@ void getAlphaEigenvectorAndValues(Matrix& covm, Matrix& autovects, vector<double
 //////////////     PARA TESTS      /////////////////
 ////////////////////////////////////////////////////
 ////////////////////////////////////////////////////
-vector<int> ztokNN(Matrix& train, vector<uint8_t>& trainlabels, vector<double> unknown, int k) {
-	vector<int> guessforK(k,0);
+void ztokNN(Matrix& train, vector<uint8_t>& trainlabels, vector<double>& unknown, int k, vector<int> &guessforK) {
 	assert(train.getm() == unknown.size());
 	priority_queue< pair<double, uint8_t>, vector< pair<double, uint8_t> >, greater< pair<double, uint8_t> > > queue;
 	int n = train.getn();
@@ -237,7 +237,4 @@ vector<int> ztokNN(Matrix& train, vector<uint8_t>& trainlabels, vector<double> u
 		}
 		guessforK[kn] = maxi;
 	}
-
-	
-	return guessforK;
 }
