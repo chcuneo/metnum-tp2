@@ -291,7 +291,6 @@ int main(int argc, char *argv[]) {
 				/////////////////////////////////////////////////////////
 				int alphaMAX = 100;
 				int kMAX = 1000;
-				int bestk = -1;
 
 				for (int alpha = 1; alpha < alphaMAX; alpha++){
 					string testdataname("Alpha=" + to_string(alpha) + " k=variable");
@@ -334,6 +333,7 @@ int main(int argc, char *argv[]) {
 					log.flush();
 				}
 			}
+			log.close();
 		}
 			break;
 		default:
