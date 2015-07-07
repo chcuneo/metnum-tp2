@@ -84,21 +84,25 @@ int main(int argc, char *argv[]) {
 	input.close();
 
 	//Cargo datos testset
-	string tstdata = databasedir + "test.csv";
-	input.open(tstdata.c_str(), ifstream::in);
-	input.ignore(numeric_limits<streamsize>::max(), '\n');			//Ignoro primera linea
 
 	Matrix testset(28000, 784);
 
-	for (int digitN = 0; digitN < 28000; digitN++) {
-		for (int pixelN = 0; pixelN < 783; pixelN++) {
-			getline(input, pixel, ',');
-			testset(digitN, pixelN) = stod(pixel);
+	if (atoi(argv[3]) != CVPARTITIONTEST && atoi(argv[3]) != TESTS) {
+		string tstdata = databasedir + "test.csv";
+		input.open(tstdata.c_str(), ifstream::in);
+		input.ignore(numeric_limits<streamsize>::max(), '\n');			//Ignoro primera linea
+
+
+		for (int digitN = 0; digitN < 28000; digitN++) {
+			for (int pixelN = 0; pixelN < 783; pixelN++) {
+				getline(input, pixel, ',');
+				testset(digitN, pixelN) = stod(pixel);
+			}
+			getline(input, pixel, '\n');								//Cargo ultimo pixel, de esta forma porque no tiene "," despues
+			testset(digitN, 783) = stod(pixel);
 		}
-		getline(input, pixel, '\n');								//Cargo ultimo pixel, de esta forma porque no tiene "," despues
-		testset(digitN, 783) = stod(pixel);
+		input.close();
 	}
-	input.close();
 
 	switch (atoi(argv[3])) {
 		case KNN:
@@ -233,6 +237,9 @@ int main(int argc, char *argv[]) {
 		case TESTS:
 		{
 			cout << "Iniciando Tests:" << endl;
+			ofstream log("/home/ccuneo/TmpMetNum/db.csv", ofstream::out);
+			log << "CVpartition,k,alpha,hits,time" << endl;
+
 			int foldingN = 0;
 
 			int trainsize = crossvaldim[foldingN].first; int testsize = crossvaldim[foldingN].second; //Tamaño de particion
@@ -240,7 +247,7 @@ int main(int argc, char *argv[]) {
 			Matrix train(trainsize, 784); vector<uint8_t> trainlabels(trainsize);	//Train de la particion y sus etiquetas
 			Matrix test(testsize, 784);	vector<uint8_t> testchecklabels(testsize);	//Test de la particion y sus etiquetas
 
-			cout << "Generando Particion" << endl;
+			cout << "Generando Particion: " << foldingN << endl;
 
 			//Genero las Particiones
 			int train0 = 0;	int test0 = 0;
@@ -293,7 +300,9 @@ int main(int argc, char *argv[]) {
 				printUpdateLine("Calculo tc(test): " + testdataname);
 
 				Matrix tctrain(trainsize, alpha);				//Aca voy a guardar las muestras de trainset cambiadas de base (base de autovectores)
-				for (int x = 0; x < trainsize; x++) for (int y = 0; y < alpha; y++)	tctrain(x, y) = vectorMul(autovects(y), train(x)); //Para cada muestra, la cambio de base y almaceno en la matriz tctrain
+				for (int x = 0; x < trainsize; x++) 
+					for (int y = 0; y < alpha; y++)	
+						tctrain(x, y) = vectorMul(autovects(y), train(x)); //Para cada muestra, la cambio de base y almaceno en la matriz tctrain
 
 				printUpdateLine("Listo tc(test):" + testdataname);
 				cout << endl << "Proceso distintos k:" << endl;
@@ -310,7 +319,6 @@ int main(int argc, char *argv[]) {
 					//printUpdateLine("Test " + to_string(x));
 					for (int i = 0; i < kMAX; i++) if ((int)testchecklabels[x] == guessforK[i]) correctguesses[i]++;		//Si predije lo que deberia, incremento
 				}
-				ofstream logtestk("/home/ccuneo/TmpMetNum/logtestk.csv", ofstream::out);
 				logtestk << "k,CorrectOf4200guesses" << endl;
 				for (int i = 0; i < kMAX; i++) {
 					logtestk << i << "," << correctguesses[i] << endl;

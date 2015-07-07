@@ -1,0 +1,7 @@
+# Cookies for domains related to kaggle.com.
+# This content may be pasted into a cookies.txt file and used by wget
+# Example:  wget -x --load-cookies cookies.txt https://www.kaggle.com/c/digit-recognizer/data
+#
+www.kaggle.com	FALSE	/	FALSE	0	__RequestVerificationToken	DxTbQ2DAVz3bTsvwzSSpaOOp4ctwAczuJ7294BBVG5145STj_71Mt_d_gLwbDrSL-uQamtl5APhot-sccqJFULyoi9I1
+.www.kaggle.com	TRUE	/	FALSE	0	ARRAffinity	4d28b8b3028e86f2d0836e8f0908a19d777f501cc84e4779837da0c40c8fd368
+.kaggle.com	TRUE	/	TRUE	0	.ASPXAUTH	D8B0723D0511E686656EB8D2C0E0E7C97C52C8D5949B9925E6C0A1E7B3F92EA7A2592128D2C25A1E615CD4243E26D161666087D2E52E969013E5020348C68BD703B63A6BAD94B77CD1553519BDB12171B6A621AD
