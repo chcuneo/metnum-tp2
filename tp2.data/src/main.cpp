@@ -241,7 +241,7 @@ int main(int argc, char *argv[]) {
 			ofstream log("/home/ccuneo/TmpMetNum/db.csv", ofstream::out);
 			log << "CVpartition,k,alpha,hits,timekNN,timeBaseChange" << endl;
 
-			for (int foldingN = 0; foldingN < Kfoldings; foldingN++) {
+			for (int foldingN = 1; foldingN < Kfoldings; foldingN++) {
 				int trainsize = crossvaldim[foldingN].first; int testsize = crossvaldim[foldingN].second; //Tamaño de particion
 
 				Matrix train(trainsize, 784); vector<uint8_t> trainlabels(trainsize);	//Train de la particion y sus etiquetas
@@ -289,7 +289,7 @@ int main(int argc, char *argv[]) {
 				///////// A PARTIR DE ACA EMPIEZAN LOS TESTS ////////////
 				/////////////////////////////////////////////////////////
 				/////////////////////////////////////////////////////////
-				int alphaMAX = 100;
+				int alphaMAX = 50;
 				int kMAX = 1000;
 
 				for (int alpha = 1; alpha < alphaMAX; alpha++){
