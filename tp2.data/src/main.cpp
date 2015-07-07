@@ -319,24 +319,22 @@ int main(int argc, char *argv[]) {
 					//printUpdateLine("Test " + to_string(x));
 					for (int i = 0; i < kMAX; i++) if ((int)testchecklabels[x] == guessforK[i]) correctguesses[i]++;		//Si predije lo que deberia, incremento
 				}
-				logtestk << "k,CorrectOf4200guesses" << endl;
+				log << "k,CorrectOf4200guesses" << endl;
 				for (int i = 0; i < kMAX; i++) {
-					logtestk << i << "," << correctguesses[i] << endl;
-					logtestk.flush();
+					log << i << "," << correctguesses[i] << endl;
+					log.flush();
 					if (correctguesses[i] > maxguesses) {
 						maxguesses = correctguesses[i];
 						bestk = i;
 					}
 				}
-				logtestk.close();
 			}
 		
 			k = bestk;
 
 			cout << "Mejor k=" << k << endl;
 			{//Hago Tests cambiando alpha
-				ofstream logalpha("/home/ccuneo/TmpMetNum/logalpha.csv", ofstream::out);
-				logalpha << "alpha-k" << k << ",CorrectOf4200guesses,tcCalculationTime" << endl;
+				log << "alpha-k" << k << ",CorrectOf4200guesses,tcCalculationTime" << endl;
 				for (alpha = 1; alpha < alphaMAX; alpha++) {
 					string testdataname("Alpha=" + to_string(alpha) + " k=" + to_string(k));
 					printUpdateLine("Calculo tc(test): " + testdataname);
@@ -364,10 +362,9 @@ int main(int argc, char *argv[]) {
 						//printUpdateLine("Test " + to_string(x));
 						if ((int)testchecklabels[x] == guess) correctguesses++;		//Si predije lo que deberia, incremento
 					}
-					logalpha << alpha << "," << correctguesses << "," << duration << endl;
+					log << alpha << "," << correctguesses << "," << duration << endl;
 				}
-				logalpha.flush();
-				logalpha.close();
+				log.flush();
 			}
 		}
 			break;
