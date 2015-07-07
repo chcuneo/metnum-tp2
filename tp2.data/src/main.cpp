@@ -292,7 +292,7 @@ int main(int argc, char *argv[]) {
 				int alphaMAX = 50;
 				int kMAX = 1000;
 
-				for (int alpha = 1; alpha < alphaMAX; alpha++){
+				for (int alpha = 1; alpha <= alphaMAX; alpha++){
 					string testdataname("Alpha=" + to_string(alpha) + " k=variable");
 					printUpdateLine("Calculo tc(test): " + testdataname);
 
