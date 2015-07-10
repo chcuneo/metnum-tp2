@@ -152,7 +152,7 @@ int main(int argc, char *argv[]) {
 			for (int foldingN = 0; foldingN < Kfoldings; foldingN++) {
 				cout << "Creando particion:" << foldingN << "..." << endl;
 
-				int trainsize = crossvaldim[foldingN].first; int testsize = crossvaldim[foldingN].second; //Tamaño de particiones
+				int trainsize = crossvaldim[foldingN].first; int testsize = crossvaldim[foldingN].second; //TamaÃ±o de particiones
 
 				Matrix train(trainsize, 784); vector<uint8_t> trainlabels(trainsize);	//Train de la particion y sus etiquetas
 				Matrix test(testsize, 784);	vector<uint8_t> testchecklabels(testsize);	//Test de la particion y sus etiquetas
@@ -242,7 +242,7 @@ int main(int argc, char *argv[]) {
 			log << "CVpartition,k,alpha,hits,timekNN,timeBaseChange" << endl;
 
 			for (int foldingN = 1; foldingN < Kfoldings; foldingN++) {
-				int trainsize = crossvaldim[foldingN].first; int testsize = crossvaldim[foldingN].second; //Tamaño de particion
+				int trainsize = crossvaldim[foldingN].first; int testsize = crossvaldim[foldingN].second; //TamaÃ±o de particion
 
 				Matrix train(trainsize, 784); vector<uint8_t> trainlabels(trainsize);	//Train de la particion y sus etiquetas
 				Matrix test(testsize, 784);	vector<uint8_t> testchecklabels(testsize);	//Test de la particion y sus etiquetas
@@ -262,7 +262,7 @@ int main(int argc, char *argv[]) {
 						test0++;
 					}
 				}
-				string displ("Particion " + to_string(foldingN)  + " creada")
+				string displ("Particion " + to_string(foldingN)  + " creada");
 				printUpdateLine(displ);
 				//A esta altura ya tengo la matriz train con las imagenes de su particion y la matriz de test con el resto, ambas con sus labels
 				printUpdateLine("Procesando kNN");
