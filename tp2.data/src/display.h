@@ -63,11 +63,11 @@ Matrix loadMatFile(const char* file) {
 }
 
 void printNewLine(string out) {
-	cout << out << endl;
+	cout << out.c_str() << endl;
 	cout.flush();
 }
 
 void printUpdateLine(string out) {
-	cout << "\r" << out;
+	cout << "\r" << "                                                              " << "\r" << out.c_str();
 	cout.flush();
 }

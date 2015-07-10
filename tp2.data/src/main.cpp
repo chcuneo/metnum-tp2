@@ -247,7 +247,7 @@ int main(int argc, char *argv[]) {
 				Matrix train(trainsize, 784); vector<uint8_t> trainlabels(trainsize);	//Train de la particion y sus etiquetas
 				Matrix test(testsize, 784);	vector<uint8_t> testchecklabels(testsize);	//Test de la particion y sus etiquetas
 
-				cout << "Generando Particion: " << foldingN << endl;
+				cout << "Generando Particion: " << foldingN;
 
 				//Genero las Particiones
 				int train0 = 0;	int test0 = 0;
@@ -262,17 +262,40 @@ int main(int argc, char *argv[]) {
 						test0++;
 					}
 				}
-
-				cout << "Particion creada" << endl;
+				string displ("Particion " + to_string(foldingN)  + " creada")
+				printUpdateLine(displ);
 				//A esta altura ya tengo la matriz train con las imagenes de su particion y la matriz de test con el resto, ambas con sus labels
+				printUpdateLine("Procesando kNN");
 
+				{
+					chrono::high_resolution_clock::time_point t2 = chrono::high_resolution_clock::now();
+					auto timebase = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+					int kMAX = 1000;
+					vector<int> guessforK(kMAX);
+					long long timek;
+					vector<int> correctguesses(kMAX, 0);							//Cantidad de predicciones correctas
+					for (int x = 0; x < testsize; x++) {
+						chrono::high_resolution_clock::time_point t3 = chrono::high_resolution_clock::now();
+						ztokNN(train, trainlabels, test(x), kMAX, guessforK);			//Hago la prediccion con knn
+						chrono::high_resolution_clock::time_point t4 = chrono::high_resolution_clock::now();
+						timek = std::chrono::duration_cast<std::chrono::microseconds>(t4 - t3).count();
+
+						//printUpdateLine("Test " + to_string(x));
+						for (int i = 0; i < kMAX; i++) if ((int)testchecklabels[x] == guessforK[i]) correctguesses[i]++;		//Si predije lo que deberia, incremento
+					}
+					//log << "CVpartition, k, alpha, hits, timek, timebase" << endl;
+					for (int i = 0; i < kMAX; i++) {
+						log << foldingN << "," << i << ",-1," << correctguesses[i] << "," << timek << ",0" << endl;
+					}
+					log.flush();
+				}
 				Matrix covm(train.getm(), train.getm());
 
 				string covmfilename = "/home/ccuneo/TmpMetNum/covm-CV" + to_string(foldingN);
 
 				printUpdateLine("Cargando matriz de covarianza...");
 				covm = loadMatFile(covmfilename.c_str());
-				printNewLine("Matriz cargada");
+				printUpdateLine("Matriz cargada");
 				//Aca en covm ya tenemos la matriz de covarianzas de train
 
 				Matrix autovects(alpha, covm.getm());			//V = aca van a estar los autovectores como filas, por cuestion de eficiencia
@@ -281,7 +304,7 @@ int main(int argc, char *argv[]) {
 
 				printUpdateLine("Cargando autovectores...");
 				autovects = loadMatFile(autovecfilename.c_str());
-				printNewLine("Autovectores cargados");
+				printUpdateLine("Autovectores cargados");
 
 				//Aca en autovects ya tenemos los autovectores de la matriz de covarianzas
 				/////////////////////////////////////////////////////////
@@ -308,7 +331,7 @@ int main(int argc, char *argv[]) {
 					auto timebase = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
 
 					printUpdateLine("Listo tc(test):" + testdataname);
-					cout << endl << "Proceso distintos k:" << endl;
+					cout <<  " | Procesando k";
 
 					vector<double> testsample(alpha);				//Aca va la muestra del test a procesar, cambiada de base
 					vector<int> guessforK(kMAX);
